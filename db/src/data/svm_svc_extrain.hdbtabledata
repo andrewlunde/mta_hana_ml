@@ -1,0 +1,24 @@
+{
+	"format_version": 1,
+	"imports":
+	[
+        {
+            "target_table": "mnist_extrain",
+            "source_data": {
+                "data_type": "CSV",
+                "file_name": "svm_svc_extrain.csv",
+                "has_header": true
+            },
+            "import_settings": {
+                "import_columns": [
+					"ATTRIBUTE1",
+					"ATTRIBUTE2",
+					"ATTRIBUTE3",
+					"ATTRIBUTE4",
+					"LABEL"
+                ],
+				"include_filter": []
+            }
+        }
+	]
+}

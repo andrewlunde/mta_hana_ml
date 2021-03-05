@@ -1,0 +1,24 @@
+{
+  "generator-sap-partner-eng": {
+    "package_version": "0.3.8",
+    "project_name": "mta_hana_ml",
+    "app_name": "hana-ml",
+    "app_desc": "Demonstrate HANA ML Library",
+    "router_name": "hana-ml-app",
+    "domain_name": "cfapps.us10.hana.ondemand.com",
+    "router_path": "app",
+    "database_path": "db",
+    "services_path": "srv",
+    "uaa_res_name": "hana-ml-uaa",
+    "uaa_svc_name": "HANA-ML_UAA",
+    "database_name": "hana-ml-hdb",
+    "db_schema_name": "HANA-ML_DB",
+    "hdi_res_name": "hana-ml-hdi",
+    "hdi_svc_name": "HANA-ML_HDI",
+    "python_module_name": "hana-ml-pyt",
+    "python_module_dir": "python",
+    "python_module_api": "hana-ml_pyt_api",
+    "python_module_be": "hana-ml_pyt_be",
+    "python_module_route": "python"
+  }
+}

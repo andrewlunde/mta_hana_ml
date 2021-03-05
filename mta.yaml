@@ -1,0 +1,154 @@
+## Generated mta.yaml based on yo sap-partner-eng version 0.3.8
+## appName = hana-ml
+## language=nodejs; multiTenant=false
+## approuter=hana-ml-app
+_schema-version: '3.1'
+ID: hana-ml
+version: 0.0.1
+description: Demonstrate HANA ML Library
+parameters:
+   enable-parallel-deployments: true
+  
+  
+build-parameters:
+  before-all:
+   - builder: custom
+     commands:
+      - npm install
+     # - npx -p @sap/cds-dk cds build
+      - cds build
+
+modules:
+
+### New Modules Here ###
+
+ - name: hana-ml-pyt
+   type: python
+   path: python
+   parameters:
+      memory: 256M
+      disk-quota: 512M
+      #host: hana-ml-pyt-${space}
+      #domain: yourdomain.com
+   provides:
+    - name: hana-ml_pyt_api
+      properties:
+         url: ${default-url}
+   requires:
+    - name: hana-ml-uaa
+    - name: hana-ml-hdi
+
+# cf push hana-ml-hdb -p db -k 512M -m 512M -u none ; sleep 60 ; cf stop hana-ml-hdb
+ - name: hana-ml-hdb
+   type: hdb
+   path: db
+   build-parameters:
+      # Don't package the dependencies if you're running into EINTEGRITY issues
+      ignore: ["default-env.json", "node_modules/", "package-lock.json"]
+      # Suppress the calling of npm install by listing no commands
+      builder: custom
+      commands: []
+   parameters:
+      memory: 512M
+      disk-quota: 512M
+      #host: ${org}-${space}-hana-ml-hdb
+      #domain: cfapps.us10.hana.ondemand.com
+   requires:
+    - name: hana-ml-hdi
+
+# cf push hana-ml-app -p app -n hana-ml-app -d cfapps.us10.hana.ondemand.com -k 256M -m 256M
+ - name: hana-ml-app
+   type: html5
+   path: app
+   build-parameters:
+      # Don't package the dependencies if you're running into EINTEGRITY issues
+      ignore: ["default-env.json","package-lock.json", "node_modules/"]
+      # Suppress the calling of npm install by listing no commands
+      builder: custom
+      commands: []
+   parameters:
+      #host: ${org}-${space}-hana-ml-app
+      #domain: cfapps.us10.hana.ondemand.com
+      #routes:
+      #  - route: hana-ml-app-${space}-${app-name}.${default-domain}
+      disk-quota: 256M
+      memory: 256M
+   provides:
+    - name: Router_api
+      properties:
+         url: ${default-url}
+         application: ${app-name}
+# CDS-MTX
+   requires:
+   # cf bind-service hana-ml-app HANA-ML_UAA
+    - name: hana-ml-uaa
+   ### New Destinations Here ###
+    - name: hana-ml_pyt_api
+      group: destinations
+      properties:
+         name: hana-ml_pyt_be
+         url: ~{url}
+         forwardAuthToken: true
+
+resources:
+
+# cf create-service xsuaa application HANA-ML_UAA -c ./cds-security.json
+ - name: hana-ml-uaa
+   type: org.cloudfoundry.managed-service
+   requires:
+    - name: Router_api
+   properties:
+      XSAPPNAME: ${xsuaa-app}
+   parameters:
+      # Re-run the following command after changing any @(requires: []) definitions in srv/*.cds
+      # Run this from the root of the project and uncomment the path:
+      # cds compile srv/ --to xsuaa,json > cds-security.json
+      #path: ./cds-security.json
+      # The combination of path: and config.scopes: Doesn't seem work.  Use one or the other.
+      # cds compile srv/ --to xsuaa,yaml and make sure the config: below matches
+      #path: ./cds-security.json
+      #path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+      service-name: HANA_ML_UAA
+      xsuaa-app: ${space}-~{Router_api/application}
+      # Define within config what used to be in the xs-security.json file.  path: now pulls in cds scopes/role templates
+      # Convert with https://www.json2yaml.com/
+      # https://github.wdf.sap.corp/pages/cap/guides/authorization#role-assignments-with-xsuaa
+      config:
+         xsappname: ${xsuaa-app}
+         ### tenant-mode
+         tenant-mode: dedicated
+         description: Security profile of the hana-ml application
+         scopes:
+          - name: "$XSAPPNAME.Callback"
+            description: With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.
+            grant-as-authority-to-apps: 
+             - "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
+          - name: "$XSAPPNAME.Administrator"
+            description: Administrate the application
+          - name: "$XSAPPNAME.User"
+            description: Use the application
+         role-templates:
+          - name: Administrator
+            description: Administrator
+            scope-references:
+             - "$XSAPPNAME.Administrator"
+          - name: User
+            description: User
+            scope-references:
+             - "$XSAPPNAME.User"
+         oauth2-configuration:
+            redirect-uris: 
+             - "http*://*.cfapps.us10.hana.ondemand.com/**"
+
+### New Resources Here ###
+
+ - name: hana-ml-hdi
+   type: com.sap.xs.hdi-container
+   parameters:
+      service-name: HANA_ML_HDI
+      config:
+         schema:
+
+

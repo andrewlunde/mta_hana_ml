@@ -1,0 +1,21 @@
+# Bring dependencies local with pip
+#mkdir vendor
+#export PYTHONUSERBASE=/home/user/projects/mta_python_ml/vendor
+#pip install --user -r requirements.txt
+#
+Flask
+#Flask==1.0.2
+cfenv
+sap_py_jwt
+#git+https://github.com/alundesap/benign.git@sap-py-jwt
+sap_xssec
+#git+https://github.com/alundesap/benign.git@PySec
+#Use PyPi
+hdbcli
+#Use github
+#git+https://github.com/alundesap/benign.git@hdbcli
+#Use local from XS_PYTHON.zip unzipped into /tmp
+#pip install -t local -f /tmp hdbcli
+#./local/hdbcli-2.3.14.tar.gz
+hana-ml
+pydevd

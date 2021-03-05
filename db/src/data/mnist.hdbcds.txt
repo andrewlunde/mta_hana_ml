@@ -1,0 +1,90 @@
+namespace mta_python_ml.db.data;
+
+context mnist {
+	type imageLine {
+		c01: Integer;
+		c02: Integer;
+		c03: Integer;
+		c04: Integer;
+		c05: Integer;
+		c06: Integer;
+		c07: Integer;
+		c08: Integer;
+		c09: Integer;
+		c10: Integer;
+		c11: Integer;
+		c12: Integer;
+		c13: Integer;
+		c14: Integer;
+		c15: Integer;
+		c16: Integer;
+		c17: Integer;
+		c18: Integer;
+		c19: Integer;
+		c20: Integer;
+		c21: Integer;
+		c22: Integer;
+		c23: Integer;
+		c24: Integer;
+		c25: Integer;
+		c26: Integer;
+		c27: Integer;
+		c28: Integer;
+    };
+	type imageBlock {
+		r01: imageLine;
+		r02: imageLine;
+		r03: imageLine;
+		r04: imageLine;
+		r05: imageLine;
+		r06: imageLine;
+		r07: imageLine;
+		r08: imageLine;
+		r09: imageLine;
+		r10: imageLine;
+		r11: imageLine;
+		r12: imageLine;
+		r13: imageLine;
+		r14: imageLine;
+		r15: imageLine;
+		r16: imageLine;
+		r17: imageLine;
+		r18: imageLine;
+		r19: imageLine;
+		r20: imageLine;
+		r21: imageLine;
+		r22: imageLine;
+		r23: imageLine;
+		r24: imageLine;
+		r25: imageLine;
+		r26: imageLine;
+		r27: imageLine;
+		r28: imageLine;
+    };
+	entity train {
+		key ID: Integer generated always as identity ( start with 1 increment by 1 );
+		LABEL: Integer not null;
+		IMAGE: imageBlock not null;	// 784 = 28 x 28
+	};
+	entity test {
+		key ID: Integer generated always as identity ( start with 1 increment by 1 );
+		LABEL: Integer not null;
+		IMAGE: imageBlock not null;	// 784 = 28 x 28
+	};
+	entity extrain {
+		key ID: Integer generated always as identity ( start with 1 increment by 1 );
+		ATTRIBUTE1: Double not null;
+		ATTRIBUTE2: Double not null;
+		ATTRIBUTE3: Double not null;
+		ATTRIBUTE4: String(10) not null;
+		LABEL: Integer not null;
+	};
+	entity expred {
+		key ID: Integer generated always as identity ( start with 1 increment by 1 );
+		ATTRIBUTE1: Double not null;
+		ATTRIBUTE2: Double not null;
+		ATTRIBUTE3: Double not null;
+		ATTRIBUTE4: String(10) not null;
+	};
+
+};
